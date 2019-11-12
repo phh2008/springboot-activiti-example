@@ -3,7 +3,7 @@ package com.phh;
 import org.mybatis.spring.annotation.MapperScan;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
-import org.springframework.boot.autoconfigure.security.servlet.SpringBootWebSecurityConfiguration;
+import org.springframework.boot.autoconfigure.security.servlet.SecurityAutoConfiguration;
 
 /**
  * 描述
@@ -13,7 +13,7 @@ import org.springframework.boot.autoconfigure.security.servlet.SpringBootWebSecu
  * @date 2019/10/17
  */
 @MapperScan("com.phh.dao")
-@SpringBootApplication(exclude = {SpringBootWebSecurityConfiguration.class})
+@SpringBootApplication(exclude = {SecurityAutoConfiguration.class})
 public class ActivitiExampleApp {
 
     public static void main(String[] args) {
