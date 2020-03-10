@@ -2,7 +2,7 @@
 <definitions xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:activiti="http://activiti.org/bpmn" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:tns="http://www.activiti.org/testm1571278247017" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" expressionLanguage="http://www.w3.org/1999/XPath" id="m1571278247017" name="" targetNamespace="http://www.activiti.org/testm1571278247017" typeLanguage="http://www.w3.org/2001/XMLSchema">
   <process id="leave" isClosed="false" isExecutable="true" name="请假" processType="None">
     <startEvent id="startApply" name="申请"/>
-    <userTask activiti:exclusive="true" id="leaveApply" name="请假申请">
+    <userTask activiti:assignee="${leaveUser}" activiti:exclusive="true" id="leaveApply" name="请假申请">
       <extensionElements>
         <activiti:formProperty id="day" name="请假天数" required="true" type="int"/>
         <activiti:formProperty id="reason" name="请假原因" required="true" type="string"/>
@@ -10,41 +10,36 @@
         <activiti:formProperty datePattern="yyyy-MM-dd HH:mm:ss" id="submitTime" name="提交时间" required="true" type="date"/>
       </extensionElements>
     </userTask>
-    <userTask activiti:exclusive="true" id="generalManager" name="总经理审批">
+    <userTask activiti:assignee="${gm}" activiti:exclusive="true" id="generalManager" name="总经理审批">
       <extensionElements>
         <activiti:formProperty id="result" name="审批结果" required="true" type="boolean"/>
         <activiti:formProperty id="remark" name="备注" type="string"/>
       </extensionElements>
     </userTask>
-    <userTask activiti:exclusive="true" id="deptManager" name="部门经理审批">
+    <userTask activiti:assignee="${dm}" activiti:exclusive="true" id="deptManager" name="部门经理审批">
       <extensionElements>
         <activiti:formProperty id="result" name="审批结果" required="true" type="boolean"/>
         <activiti:formProperty id="remark" name="备注" type="string"/>
       </extensionElements>
     </userTask>
-    <endEvent id="generalEnd" name="结束"/>
     <endEvent id="deptEnd" name="结束"/>
     <exclusiveGateway gatewayDirection="Unspecified" id="gateway" name="gateway"/>
     <sequenceFlow id="_4" sourceRef="startApply" targetRef="leaveApply"/>
     <sequenceFlow id="_5" sourceRef="leaveApply" targetRef="gateway"/>
-    <sequenceFlow id="_6" sourceRef="gateway" targetRef="deptManager">
-      <documentation id="_6_D_1">
-        <![CDATA[请假不超过3天]]>
-      </documentation>
+    <sequenceFlow id="_6" name="${day}" sourceRef="gateway" targetRef="deptManager">
+      <documentation id="_6_D_1"/>
       <conditionExpression xsi:type="tFormalExpression">
         <![CDATA[${day<=3}]]>
       </conditionExpression>
     </sequenceFlow>
-    <sequenceFlow id="_7" sourceRef="gateway" targetRef="generalManager">
-      <documentation id="_7_D_1">
-        <![CDATA[超过3天]]>
-      </documentation>
+    <sequenceFlow id="_7" name="${day}" sourceRef="gateway" targetRef="generalManager">
+      <documentation id="_7_D_1"/>
       <conditionExpression xsi:type="tFormalExpression">
         <![CDATA[${day>3}]]>
       </conditionExpression>
     </sequenceFlow>
     <sequenceFlow id="_8" sourceRef="deptManager" targetRef="deptEnd"/>
-    <sequenceFlow id="_9" sourceRef="generalManager" targetRef="generalEnd"/>
+    <sequenceFlow id="_2" sourceRef="generalManager" targetRef="deptEnd"/>
   </process>
   <bpmndi:BPMNDiagram documentation="background=#3C3F41;count=1;horizontalcount=1;orientation=0;width=842.4;height=1195.2;imageableWidth=832.4;imageableHeight=1185.2;imageableX=5.0;imageableY=5.0" id="Diagram-_1" name="New Diagram">
     <bpmndi:BPMNPlane bpmnElement="leave">
@@ -61,7 +56,7 @@
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape bpmnElement="generalManager" id="Shape-generalManager">
-        <dc:Bounds height="55.0" width="85.0" x="465.0" y="180.0"/>
+        <dc:Bounds height="55.0" width="85.0" x="470.0" y="175.0"/>
         <bpmndi:BPMNLabel>
           <dc:Bounds height="55.0" width="85.0" x="0.0" y="0.0"/>
         </bpmndi:BPMNLabel>
@@ -72,14 +67,8 @@
           <dc:Bounds height="55.0" width="85.0" x="0.0" y="0.0"/>
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape bpmnElement="generalEnd" id="Shape-generalEnd">
-        <dc:Bounds height="32.0" width="32.0" x="680.0" y="195.0"/>
-        <bpmndi:BPMNLabel>
-          <dc:Bounds height="32.0" width="32.0" x="0.0" y="0.0"/>
-        </bpmndi:BPMNLabel>
-      </bpmndi:BPMNShape>
       <bpmndi:BPMNShape bpmnElement="deptEnd" id="Shape-deptEnd">
-        <dc:Bounds height="32.0" width="32.0" x="680.0" y="60.0"/>
+        <dc:Bounds height="32.0" width="32.0" x="685.0" y="130.0"/>
         <bpmndi:BPMNLabel>
           <dc:Bounds height="32.0" width="32.0" x="0.0" y="0.0"/>
         </bpmndi:BPMNLabel>
@@ -90,44 +79,44 @@
           <dc:Bounds height="32.0" width="32.0" x="0.0" y="0.0"/>
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNShape>
-      <bpmndi:BPMNEdge bpmnElement="_4" id="BPMNEdge__4" sourceElement="startapply" targetElement="leave_apply">
+      <bpmndi:BPMNEdge bpmnElement="_2" id="BPMNEdge__2" sourceElement="generalManager" targetElement="deptEnd">
+        <di:waypoint x="555.0" y="202.5"/>
+        <di:waypoint x="685.0" y="146.0"/>
+        <bpmndi:BPMNLabel>
+          <dc:Bounds height="0.0" width="0.0" x="0.0" y="0.0"/>
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="_4" id="BPMNEdge__4" sourceElement="startApply" targetElement="leaveApply">
         <di:waypoint x="47.0" y="161.0"/>
         <di:waypoint x="140.0" y="162.5"/>
         <bpmndi:BPMNLabel>
           <dc:Bounds height="0.0" width="0.0" x="0.0" y="0.0"/>
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge bpmnElement="_5" id="BPMNEdge__5" sourceElement="leave_apply" targetElement="_3">
+      <bpmndi:BPMNEdge bpmnElement="_5" id="BPMNEdge__5" sourceElement="leaveApply" targetElement="gateway">
         <di:waypoint x="225.0" y="162.5"/>
         <di:waypoint x="325.0" y="161.0"/>
         <bpmndi:BPMNLabel>
           <dc:Bounds height="0.0" width="0.0" x="0.0" y="0.0"/>
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge bpmnElement="_6" id="BPMNEdge__6" sourceElement="_3" targetElement="jiaowuchu">
+      <bpmndi:BPMNEdge bpmnElement="_6" id="BPMNEdge__6" sourceElement="gateway" targetElement="deptManager">
         <di:waypoint x="357.0" y="161.0"/>
         <di:waypoint x="465.0" y="72.5"/>
         <bpmndi:BPMNLabel>
           <dc:Bounds height="0.0" width="0.0" x="0.0" y="0.0"/>
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge bpmnElement="_7" id="BPMNEdge__7" sourceElement="_3" targetElement="head_teacher">
+      <bpmndi:BPMNEdge bpmnElement="_7" id="BPMNEdge__7" sourceElement="gateway" targetElement="generalManager">
         <di:waypoint x="357.0" y="161.0"/>
-        <di:waypoint x="465.0" y="207.5"/>
+        <di:waypoint x="470.0" y="202.5"/>
         <bpmndi:BPMNLabel>
           <dc:Bounds height="0.0" width="0.0" x="0.0" y="0.0"/>
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge bpmnElement="_8" id="BPMNEdge__8" sourceElement="jiaowuchu" targetElement="_2">
+      <bpmndi:BPMNEdge bpmnElement="_8" id="BPMNEdge__8" sourceElement="deptManager" targetElement="deptEnd">
         <di:waypoint x="550.0" y="72.5"/>
-        <di:waypoint x="680.0" y="76.0"/>
-        <bpmndi:BPMNLabel>
-          <dc:Bounds height="0.0" width="0.0" x="0.0" y="0.0"/>
-        </bpmndi:BPMNLabel>
-      </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge bpmnElement="_9" id="BPMNEdge__9" sourceElement="head_teacher" targetElement="endapply">
-        <di:waypoint x="550.0" y="207.5"/>
-        <di:waypoint x="680.0" y="211.0"/>
+        <di:waypoint x="685.0" y="146.0"/>
         <bpmndi:BPMNLabel>
           <dc:Bounds height="0.0" width="0.0" x="0.0" y="0.0"/>
         </bpmndi:BPMNLabel>

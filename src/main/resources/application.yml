@@ -7,10 +7,14 @@ spring:
     name: activiti-example
   datasource:
     druid:
-      url: jdbc:mysql://192.168.1.216:3306/activiti7?useUnicode=true&useSSL=false&characterEncoding=utf8
+      #url: jdbc:mysql://localhost:3306/activiti7?useUnicode=true&useSSL=false&characterEncoding=utf8
+      #mysql8
+      url: jdbc:mysql://localhost:3306/activiti7?useUnicode=true&useSSL=false&characterEncoding=utf8&serverTimezone=UTC&allowPublicKeyRetrieval=true
       username: root
       password: root
-      driver-class-name: com.mysql.jdbc.Driver
+      #driver-class-name: com.mysql.jdbc.Driver
+      #mysql8.0
+      driver-class-name: com.mysql.cj.jdbc.Driver
       initialSize: 5
       minIdle: 5
       maxActive: 20
@@ -33,9 +37,11 @@ spring:
   mvc:
     static-path-pattern: /static/**
   activiti:
-    database-schema-update: true
+    database-schema-update: false
     history-level: full
     db-history-used: true
+    #database-schema: activiti7
+    use-strong-uuids: false
   thymeleaf:
     prefix: classpath:/templates/
     suffix: .html
